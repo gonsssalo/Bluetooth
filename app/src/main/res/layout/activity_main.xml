@@ -14,7 +14,13 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="pesquisar"
+        android:text="Definições Bluetooth "
+        android:onClick="Conect"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Procurar Dispositivos"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:id="@+id/button"

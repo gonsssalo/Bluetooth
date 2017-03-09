@@ -4,19 +4,24 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,6 +31,7 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,51 +39,25 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class FoundBTDevices extends ListActivity {
 
+   private FoundBTDevicesAdapter  foundBTDevicesAdapter;
     private BluetoothAdapter mBluetoothAdapter;
     private ArrayList<BluetoothObject> arrayOfFoundBTDevices;
+    ArrayList<String> DevicesArrayList = new ArrayList<String>();
+    ArrayList<Integer> RSSIArrayList = new ArrayList<Integer>();
 
-    private int m_interval = 10000; // 10 seconds
-    private Handler m_handler;
+    private Timer autoUpdate;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-
 
         displayListOfFoundDevices();
 
-        m_handler = new Handler();
-       //startRepeatingTask();
     }
 
-
-    Runnable m_statusChecker = new Runnable()
-    {
-        @Override
-        public void run() {
-
-
-            displayListOfFoundDevices();
-
-
-            Toast.makeText(getApplicationContext(), "reapeting", Toast.LENGTH_SHORT).show();
-            m_handler.postDelayed(m_statusChecker, m_interval);
-        }
-    };
-
-    public void startRepeatingTask()
-    {
-        m_statusChecker.run();
-    }
-
-    public void stopRepeatingTask()
-    {
-        m_handler.removeCallbacks(m_statusChecker);
-    }
 
 
     private void displayListOfFoundDevices() {
@@ -114,6 +94,13 @@ public class FoundBTDevices extends ListActivity {
                     arrayOfFoundBTDevices.remove(bluetoothObject);
                     arrayOfFoundBTDevices.add(bluetoothObject);
 
+
+                    DevicesArrayList.add(DevicesArrayList.size(),device.getName());
+                    RSSIArrayList.add(RSSIArrayList.size(),rssi);
+
+                        Toast.makeText(getApplicationContext(),"Devices N: " + DevicesArrayList.size() +  device.getName(), Toast.LENGTH_SHORT).show();
+
+
                     // 1. Pass context and data to the custom adapter
                     FoundBTDevicesAdapter adapter = new FoundBTDevicesAdapter(getApplicationContext(), arrayOfFoundBTDevices);
                     // 2. setListAdapter
@@ -122,19 +109,15 @@ public class FoundBTDevices extends ListActivity {
 
                     setListAdapter(adapter);
 
-                    Toast.makeText(getApplicationContext(), "displayListOfFoundDevices", Toast.LENGTH_SHORT).show();
-
-
-
                }
-
 
             }
         };
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
-        //arrayOfFoundBTDevices = new ArrayList<BluetoothObject>();
+
+
         ListView lv = getListView();
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -144,16 +127,22 @@ public class FoundBTDevices extends ListActivity {
                                     long id)
             {
 
+                int posição = position;
 
 
-                // Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
-                // assuming string and if you want to get the value on click of list item
-                // do what you intend to do on click of listview row
+                Intent intent = new Intent(FoundBTDevices.this, TrakingActivity.class);
+               //Send name and RSSI
+                intent.putExtra("name", DevicesArrayList.get(posição));
+                intent.putExtra("RSSI", RSSIArrayList.get(posição));
+
+                startActivity(intent);
             }
         });
 
 
     }
+
+
 
     @Override
     protected void onPause()
@@ -165,46 +154,27 @@ public class FoundBTDevices extends ListActivity {
         Toast.makeText(getApplicationContext(), "onPause", Toast.LENGTH_SHORT).show();
     }
 
-   @Override
-    protected void onDestroy ()
-   {
-
-       super.onDestroy();
-       stopRepeatingTask();
-       Toast.makeText(getApplicationContext(), "onDestroy", Toast.LENGTH_SHORT).show();
-   }
-
-
     @Override
-    protected void onStop ()
-    {
-
-        super.onStop();
-        Toast.makeText(getApplicationContext(), "onStop", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onResume ()
-    {
-
+    public void onResume() {
         super.onResume();
-        Toast.makeText(getApplicationContext(), "onResume", Toast.LENGTH_SHORT).show();
+        autoUpdate = new Timer();
+        autoUpdate.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        updateList();
+                    }
+                });
+            }
+        }, 0, 10000); // updates each 10 secs
     }
 
-    @Override
-    protected void onRestart ()
-    {
+    private void updateList(){
 
-        super.onRestart();
-        Toast.makeText(getApplicationContext(), "onRestart", Toast.LENGTH_SHORT).show();
-    }
+        arrayOfFoundBTDevices.clear();
+        Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
 
-    @Override
-    protected void onStart ()
-    {
-
-        super.onStart();
-        Toast.makeText(getApplicationContext(), "onStart", Toast.LENGTH_SHORT).show();
     }
 
 }

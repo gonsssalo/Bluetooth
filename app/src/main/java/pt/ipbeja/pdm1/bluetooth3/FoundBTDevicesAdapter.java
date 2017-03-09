@@ -1,11 +1,15 @@
 package pt.ipbeja.pdm1.bluetooth3;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -27,9 +31,11 @@ public class FoundBTDevicesAdapter extends ArrayAdapter<BluetoothObject> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public View getView(int position, View convertView,ViewGroup parent)
     {
+
         BluetoothObject bluetoothObject = arrayFoundDevices.get(position);
+
 
         // 1. Create Inflater
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -42,17 +48,20 @@ public class FoundBTDevicesAdapter extends ArrayAdapter<BluetoothObject> {
         TextView bt_address = (TextView) rowView.findViewById(R.id.textview_bt_scan_address);
         TextView bt_signal_strength = (TextView) rowView.findViewById(R.id.textview_bt_scan_signal_strength);
 
+
+
+
         // 4. Set the text for each widget
         bt_name.setText(bluetoothObject.getBluetooth_name());
         bt_address.setText("address: " + bluetoothObject.getBluetooth_address());
         bt_signal_strength.setText("RSSI: " + bluetoothObject.getBluetooth_rssi() + "dbm");
 
 
-
         // 5. return rowView
         return rowView;
 
     }//end getView()
+
 
 
 
