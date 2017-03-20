@@ -8,17 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.ParcelUuid;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.UUID;
+
 
 
 public class FoundBTDevices extends ListActivity {
@@ -36,7 +32,8 @@ public class FoundBTDevices extends ListActivity {
     //ArrayList of Devices
     ArrayList<BluetoothDevice> DevicesArrayList = new ArrayList<>();
 
-   public ParcelUuid[] Puuid;
+    String uuidS;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +79,8 @@ public class FoundBTDevices extends ListActivity {
                         bluetoothObject.setBluetooth_rssi(rssi);
 
 
-                        arrayOfFoundBTDevices.remove(bluetoothObject);
+
+                       // arrayOfFoundBTDevices.remove(bluetoothObject);
                         arrayOfFoundBTDevices.add(bluetoothObject);
 
                         // Add device information in Arrays
@@ -90,10 +88,7 @@ public class FoundBTDevices extends ListActivity {
                         DevicesNamesArrayList.add(DevicesNamesArrayList.size(), device.getName());
                         RSSIArrayList.add(RSSIArrayList.size(), rssi);
                         MacAdressArrayList.add(MacAdressArrayList.size(), device.getAddress());
-
-                    Puuid = device.getUuids();
-
-
+device.getUuids();
 
                         // 1. Pass context and data to the custom adapter
                         FoundBTDevicesAdapter adapter = new FoundBTDevicesAdapter(getApplicationContext(), arrayOfFoundBTDevices);
@@ -124,10 +119,11 @@ public class FoundBTDevices extends ListActivity {
 
 
 
+
                 BluetoothDevice selectedDevice = DevicesArrayList.get(position);
-                    // Not Working, get UUID
-                //  String uuid = Puuid[0].toString();
-              //  Toast.makeText(FoundBTDevices.this, uuid, Toast.LENGTH_SHORT).show();
+
+
+
 
                 //Send device and RSSI
                 intent.putExtra("btdevice", selectedDevice);

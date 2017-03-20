@@ -17,10 +17,10 @@ import java.util.UUID;
 public class TrakingActivity extends AppCompatActivity {
     Long getLeastSignificantBits = UUID.randomUUID().getLeastSignificantBits();
     Long getMostSignificantBits = UUID.randomUUID().getMostSignificantBits();
-    private final UUID uuid = new UUID(getMostSignificantBits,getLeastSignificantBits);
+  //  private final UUID uuid = new UUID(getMostSignificantBits,getLeastSignificantBits);
     private BluetoothAdapter bluetoothAdapter;
-
-
+    private final static UUID uuid = UUID.fromString("00001112-0000-1000-8000-00805f9b34fb");
+   // private final static UUID uuid = UUID.fromString("fc5ffc49-00e3-4c8b-9cf1-6b72aad1001a");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
