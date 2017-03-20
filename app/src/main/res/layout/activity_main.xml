@@ -25,4 +25,13 @@
         android:layout_alignParentStart="true"
         android:id="@+id/button"
         android:onClick="btnScanForDevices" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Conect"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/button2"
+        android:onClick="Conect2" />
 </LinearLayout>

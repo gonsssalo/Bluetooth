@@ -2,6 +2,7 @@ package pt.ipbeja.pdm1.bluetooth3;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.ParcelUuid;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-/**
- * Created by Utilizador on 06/03/2017.
- */
+
 
 public class FoundBTDevicesAdapter extends ArrayAdapter<BluetoothObject> {
 
@@ -47,7 +46,7 @@ public class FoundBTDevicesAdapter extends ArrayAdapter<BluetoothObject> {
         TextView bt_name = (TextView) rowView.findViewById(R.id.textview_bt_scan_name);
         TextView bt_address = (TextView) rowView.findViewById(R.id.textview_bt_scan_address);
         TextView bt_signal_strength = (TextView) rowView.findViewById(R.id.textview_bt_scan_signal_strength);
-
+        TextView bt_scan_uuid = (TextView) rowView.findViewById(R.id.textview_bt_scan_uuid);
 
 
 
@@ -55,6 +54,10 @@ public class FoundBTDevicesAdapter extends ArrayAdapter<BluetoothObject> {
         bt_name.setText(bluetoothObject.getBluetooth_name());
         bt_address.setText("address: " + bluetoothObject.getBluetooth_address());
         bt_signal_strength.setText("RSSI: " + bluetoothObject.getBluetooth_rssi() + "dbm");
+
+        ParcelUuid uuid[] = bluetoothObject.getBluetooth_uuids();
+        if (uuid != null)
+            bt_scan_uuid.setText("uuid: " + uuid[0]);
 
 
         // 5. return rowView

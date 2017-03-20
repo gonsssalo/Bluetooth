@@ -14,9 +14,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent discoverableIntent =
-                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        startActivity(discoverableIntent);
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device does not support Bluetooth
+        } else {
+            if (!mBluetoothAdapter.isEnabled()) {
+                mBluetoothAdapter.enable();
+            }
+        }
+
     }
 
     public void Conect(View view) {
@@ -32,6 +38,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void Conect2(View view) {
+
+        // Start this on a new activity without passing any data to it
+        Intent intent = new Intent(this, Bluetooth.class);
+        startActivity(intent);
+
+
+    }
+
 
     public void btnScanForDevices(View view) {
 
@@ -41,4 +56,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-}
+    }
+
+
